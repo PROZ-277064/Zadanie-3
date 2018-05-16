@@ -151,7 +151,11 @@ public class TicTacToe extends Application {
 					}
 					
 					int tmp = consumer.receiveQueueMessages();
-					
+					if( tmp == 42 )
+					{
+						newGameNoWait();
+						return;
+					}
 					int t1 = tmp%3;
 					int t2 = tmp/3;
 					if( board[t1][t2].getValue().equals("") )
@@ -246,6 +250,27 @@ public class TicTacToe extends Application {
 		}
 		l1.setText("You play: " + (player ? "O" : "X"));
 	}
+	
+	void newGameNoWait() {
+		win.setText("");
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				board[j][i].reset();
+			}
+		}
+		playable = true;
+		
+		player = true;
+		l1.setText("You play: " + (player ? "O" : "X"));
+		int tmp = consumer.receiveQueueMessages();
+		int t1 = tmp%3;
+		int t2 = tmp/3;
+		if( board[t1][t2].getValue().equals("") )
+			board[t1][t2].drawX();
+		else
+			System.out.println("BŁĄD - ODEBRANO ZŁY RUCH!");
+		checkState();
+	}
 
 	private boolean checkState() {
 		for (Combo combo : combos) {
@@ -258,7 +283,14 @@ public class TicTacToe extends Application {
 				return true;
 			}
 		}
-		return false;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if( board[j][i].getValue().equals("") )
+					return false;
+			}
+		}
+		win.setText("Draw!");
+		return true;
 	}
 
 }

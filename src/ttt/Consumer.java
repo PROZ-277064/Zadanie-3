@@ -18,9 +18,10 @@ public class Consumer {
 			JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
 			System.out.println("Konsument czeka na wiadomość");
 			
-			msg = jmsConsumer.receiveBody(String.class,10);
-			System.out.printf("Odebrano wiadomość: '%s'\n", msg);
-			
+			//while (( msg = jmsConsumer.receiveBody(String.class,10)) != null) {
+				msg = jmsConsumer.receiveBody(String.class,10);
+				System.out.printf("Odebrano wiadomość: '%s'\n", msg);
+			//}
 			jmsConsumer.close();
 			System.out.println("Konsument zakończył odbiór.");
 		}
@@ -42,7 +43,6 @@ public class Consumer {
 			
 			while( (msg = jmsConsumer.receiveBody(String.class,10)) == null );
 				System.out.printf("Odebrano wiadomość: '%s'\n", msg);
-				
 			jmsConsumer.close();
 			System.out.println("Konsument zakończył odbiór.");
 		}
